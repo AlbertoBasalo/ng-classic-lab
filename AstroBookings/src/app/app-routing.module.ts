@@ -4,8 +4,13 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./routes/home/home.module').then((module) => module.HomeModule),
+    loadChildren: () => import('./routes/home/home.module').then((m) => m.HomeModule),
   },
+  {
+    path: 'about',
+    loadChildren: () => import('./routes/about/about.module').then((m) => m.AboutModule),
+  },
+  // ... other existing routes
 ];
 
 @NgModule({
