@@ -1,6 +1,6 @@
 # Angular Clásico Avanzado
 
-Curso de Angular Clásico Avanzado 
+Curso de Angular Clásico Avanzado en versión 16.2
 
 ## Repository
 
