@@ -84,6 +84,15 @@ Or manually:
   providedIn: "root",
 })
 export class HomeService {}
+
+// \src\app\routes\home\home.page.ts
+@Component({
+  templateUrl: "./home.page.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class HomePage {
+  constructor(private readonly homeService: HomeService) {}
+}
 ```
 
 ## 5.- Generate presenter component
