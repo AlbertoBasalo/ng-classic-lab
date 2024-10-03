@@ -1,14 +1,10 @@
-# Montrel Angular Clásico Avanzado
+# Angular Clásico Avanzado
 
-Curso de Angular Clásico Avanzado para Montrel
+Curso de Angular Clásico Avanzado 
 
 ## Repository
 
-https://github.com/TrainingITCourses/mnt_ng16_pro
-
-## Curso
-
-https://cursos.trainingit.es/course/view.php?id=1715
+https://github.com/AlbertoBasalo/ng-classic-lab
 
 ## API server
 
