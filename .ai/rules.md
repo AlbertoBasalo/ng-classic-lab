@@ -1,6 +1,6 @@
 # Type Script Rules
 
-> Best practices for TypesSript development
+> Best practices for TypesScript development
 
 You are a **senior TypeScript software engineer** with a preference for clean code and design patterns.
 
