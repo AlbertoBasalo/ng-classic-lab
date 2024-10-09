@@ -1,0 +1,20 @@
+Login->Forms
+Register->0
+
+
+
+Initial Chunk Files           | Names                           |  Raw Size | Estimated Transfer Size
+main.511f1b0e029e5573.js      | main                            | 226.23 kB |                61.80 kB
+styles.6f32346032ee4688.css   | styles                          |  79.71 kB |                 9.69 kB
+polyfills.0d78712b093e2e14.js | polyfills                       |  33.03 kB |                10.64 kB
+runtime.6d83177ea0ff9bb6.js   | runtime                         |   2.72 kB |                 1.30 kB
+
+                              | Initial Total                   | 341.70 kB |                83.43 kB
+
+Lazy Chunk Files              | Names                           |  Raw Size | Estimated Transfer Size
+579.15c0a63f1bda0d6b.js       | routes-login-login-module       |  19.86 kB |                 4.83 kB
+1.9615e7befeb9a662.js         | routes-register-register-module |   2.62 kB |               947 bytes
+445.743ab18b0b734df5.js       | routes-about-about-module       |   1.54 kB |               577 bytes
+253.324d6df69dd85709.js       | routes-home-home-module         |   1.08 kB |               415 bytes
+
+Build at: 2024-10-09T08:06:39.743Z - Hash: 847f01b45d4da340 - Time: 20719ms

@@ -1,305 +1,183 @@
-# Angular Classic Rules
+# Angular Classic rules
 
-> Best practices for Angular Classic development
+General guidelines for projects compatible with classic Angular (14, 15 or 16).
 
-You are a **senior Angular Classic software engineer** with a preference for clean code and design patterns.
+## Angular classic modules
 
-Generate code, corrections, and refactorings that comply with the basic principles and nomenclature of this document.
+### Eager Modules
 
-## General Guidelines
+- Declare a `core` module for configure providers, that are global to the application.
+- Declare a `core/layout` module for layout components.
+- Declare a `shared/atoms` module for basic UI components.
 
-1. Generate **clean**, well-structured, and easily maintainable code.
-2. Implement **tests** for all the code you generate.
-3. Include **robust** error handling and proper logging.
-4. Add **comments** to public (exported) code explaining the _"why"_ rather than the _"what"_.
+This is the import graph for the root `AppModule`.
 
-## TypeScript Guidelines
+```text
+AppModule
+  |- CoreModule
+    |- LayoutModule
+      |- AtomsModule
+```
 
-### Type Annotations
+### Lazy Modules
 
-- Annotate every variable, constant, parameter, and return value explicitly with its **type**.
-- Avoid the type `any`; always declare the **strict** and narrow _TypeScript_ type.
-- Enable `strictNullChecks` in `tsconfig.json`
-- Avoid empty checks, use a value that represent the case and default values for optional parameters.
-- In case of explicit allow the absence of value avoid `null` and use `undefined`.
-- Avoid `Enum` definitions and use Union types instead.
-- Create the necessary types to define the every data structure.
-- Prefer `type` over `interface` for data definitions.
-- Use union types over enums.
-- **Don't abuse primitive types** and encapsulate data in composite types.
-- When data needs **validation**, use the ValueObject pattern.
-  - Implement it via decorators using the `class-validator` library.
-- Prefer **immutability** for data.
-  - Use `as const` for literals and objects that don't change.
-  - Use `readonly` for avoid change properties.
+- Declare a `routes/feature` module for each routed feature of the application.
+- Declare a `shared/ui` module for UI components, directives, and pipes that are used in the feature module.
 
-> Examples of good type annotations:
+This is the import graph for the lazy `FeatureModule`.
 
-```typescript
-let name: string = "";
-let age: number | undefined = undefined;
-function sayHello(name: string, greeting: string = "Hello"): void {
-  console.log(`${greeting}, ${name}!`);
-}
-type Gender = "male" | "female" | "other";
-type User = {
-  name: string;
-  age?: number;
-  email: string;
-  gender: Gender;
-};
-const EMPTY_USER: User = { name, age, email: "", gender: "other" } as const;
-const ADULT_AGE: number = 18;
-class Age {
-  static readonly ADULT_AGE = 18;
-  constructor(public readonly value: number) {
-    if (value < 0) {
-      throw new Error("Age cannot be negative");
+```text
+FeatureModule
+  |- SharedModule
+    |- AtomsModule
+```
+
+## Angular classic components
+
+- Use `standalone: false` for components, directives, and pipes.
+- Export components, directives, and pipes from the shared modules (Atoms and UI).
+- Export the Layout component to be used in the AppComponent.
+
+Angular.json configuration for cli schematics.
+
+```json
+{
+  "schematics": {
+    "@schematics/angular:component": {
+      "changeDetection": "OnPush",
+      "flat": true,
+      "inlineStyle": true,
+      "inlineTemplate": true,
+      "skipTests": true,
+      "standalone": false
     }
-  }
-  isAdult(): boolean {
-    return this.value >= Age.ADULT_AGE;
   }
 }
 ```
 
-### Naming Conventions
+### Types of components
 
-- Use `PascalCase` for classes, types and interfaces.
-- Use `camelCase` for variables, functions, and public properties and methods.
-- Use `#camelCase` for private properties and methods.
-- Use `UPPERCASE` for environment variables.
-- Use `kebab-case` for file and directory names.
-- Avoid magic numbers and define constants.
-- Except well-known values like `0`, `1`, `true`, `false`, etc.
-- Start each function or method with a verb.
-- Use verbs for boolean variables. Example: `isLoading`, `hasError`, `canDelete`, etc.
-- Use complete words instead of abbreviations and correct spelling.
-- Except for standard acronyms like `Api`, `Dto` , `Url` or well-known abbreviations like `i`, `j`, `id`, `err`, `ctx`, `req`, `res` etc.
+- **Container**: Use services to get and manage data. Use type `page` for routed pages or `widget` for embedded components.
+- **Presenter**: Receives data through `@Input()` and emits events through `@Output()` properties without changing it. Can be shared or not. Use default `component` type.
+- **Atom**: Basic presentation components eager loaded and used across the application. Use type `atom`.
 
-> Examples of good code style:
+Example of CLI commands to generate those components.
+
+```bash
+# An atom component
+ng g c shared/atoms/my-atom --export=true --type=atom
+
+# A shared component
+ng g c shared/ui/my-component --export=true
+
+# A page component
+ng g c routes/home/home  --skip-selector=true --type=page
+
+# A feature component
+ng g c routes/home/product-list
+
+# A widget component
+ng g c somewhere/my-widget --export=true --type=widget
+```
+
+## Injectable services
+
+- Use `providedIn: 'root'` by default for every service, even if it's used only in a specific feature.
+- Exceptionally provide services for certain components or features with an empty `@Injectable()` decorator.
+
+### Inversion of control
+
+- In certain cases, use `@Injectable` to declare a class token that can be provided with an specific instance in a specific module.
 
 ```typescript
-const MY_CONSTANT = 5;
-export class MyClass {
-  myProperty = MY_CONSTANT;
-  #hasError = false;
+// service.ts
+@Injectable()
+export class MyService {
+  // Could be abstract
+}
+```
 
-  myMethod(): void {
-    if (this.#canDoSomething()) {
-      try {
-        this.#myPrivateMethod();
-      } catch (err) {
-        console.error(err);
-        this.hasError = true;
-      }
-    }
+```typescript
+// custom-service.ts
+export class CustomService extends MyService {
+  // Custom implementation
+}
+```
+
+```typescript
+// module.ts
+@NgModule({
+  providers: [{ provide: MyService, useClass: CustomService }],
+})
+export class MyModule {
+  // could use `useValue` to provide a specific instance
+  // could use `useFactory` to provide a dynamic instance
+  // could also be provided for a component or feature
+}
+```
+
+### Framework customization
+
+- Some framework behaviors can be customized with IoC.
+
+> For example, the Http Interceptors feature.
+
+```typescript
+// module.ts
+@NgModule({
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true },
+  ],
+})
+export class CoreModule {}
+```
+
+## Angular routing
+
+- Use a routing module to declare the routes for root or for a feature module.
+- Use lazy modules for every feature route of the application.
+- Use guards to prevent access to routes that are not allowed.
+- Prefer loading data in components, use resolvers if can be shared across multiple components.
+- Prefer `routerLink` for navigation over `router.navigate()`.
+
+## Http
+
+- Use `HttpClientModule` to send requests.
+- Use `HttpInterceptor` to handle requests and responses globally for authentication, logging, etc.
+- Declare Repository services to manage resources from an API following the clean architecture pattern.
+
+Example of shared repository service.
+
+```typescript
+// resource-repository.service.ts
+@Injectable({ providedIn: "root" })
+export class ResourceRepositoryService {
+  private readonly baseUrl = "https://api.example.com/resources";
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable<Resource[]> {
+    return this.http.get<Resource[]>(`${this.baseUrl}/`);
   }
-  #myPrivateMethod(): void {
-    if (this.myProperty < 0) {
-      throw new Error("myProperty cannot be negative");
-    }
-    for (let i = 0; i < this.myProperty; i++) {
-      console.log(i);
-    }
+
+  getById(id: string): Observable<Resource> {
+    return this.http.get<Resource>(`${this.baseUrl}/${id}`);
   }
-  #canDoSomething(): boolean {
-    return true;
+
+  post(resource: Partial<Resource>): Observable<Resource> {
+    return this.http.post<Resource>(this.baseUrl, resource);
   }
 }
 ```
 
-### Comments
+## Non Angular domain and utilities
 
-- Use **JSDoc** to document public surface for classes and modules.
-- Do not document private members.
-- Do not add line comments, the code should be self explanatory.
+- Use a `shared/domain` folder for entities, types, interfaces, and constants.
+- Use a `shared/util` folder for functions, helpers, etc.
+- Test utilities and entities without the need of Angular modules.
 
-> Examples of good JSDoc comments:
+## Testing
 
-```typescript
-/**
- * Represents a user in the system.
- * @extends BaseEntity using its id as unique identifier.
- */
-export class User extends BaseEntity {
-  #apiUrl = "https://api.example.com/users";
-
-  /**
-   * Creates an instance of User.
-   * @param {string} name - The name of the user.
-   * @param {number} age - The age of the user.
-   * @param {string} email - The email of the user.
-   * @param {string} gender - The gender of the user.
-   */
-  constructor(name: string, age: number, email: string, gender: Gender) {
-    this.name = name;
-    this.age = age;
-    this.email = email;
-    this.gender = gender;
-  }
-
-  /**
-   * Sends a message to the user.
-   * @param {string} message - The message to send.
-   * @throws {Error} If the message is too long.
-   */
-  sendMessage(message: string): void {
-    if (message.length > 100) {
-      throw new Error("Message too long. Max length is 100 characters.");
-    }
-    this.#callApi();
-  }
-
-  #callApi(): void {
-    console.log(`Calling API: ${this.#apiUrl} for user ${this.name}`);
-  }
-}
-```
-
-### Functions and Methods
-
-> In this context, what is understood as a function will also apply to a method.
-
-- Write short functions with a single purpose. **Less than 20 instructions**.
-- Name functions with a verb and something else.
-  - If it returns a boolean, use `isX` or `hasX`, `canX`, etc.
-  - In any case use a meaningful verb and a noun for functions `executeX`, `changeX` or `saveX`, etc.
-  - For class methods try to use only a `verb` format.
-- **Avoid nesting blocks** by:
-  - Early checks and returns.
-  - Extraction to utility functions or private methods.
-  - Avoid ternary operators, use if/else instead.
-    - Exception: use ternary operators for simple expressions like `return age>18 ? 'adult' : 'child'`.
-- Use higher-order functions (`map`, `filter`, `reduce`, etc.) to avoid block nesting.
-  - Use arrow functions for simple callback functions (**less than 5 instructions**).
-  - Create and use named functions for complex callback functions.
-- Use default parameter values instead of checking for null or undefined.
-- Reduce function parameters using RO-RO (Request-Response Object) pattern.
-  - Use an object for **more than 2 parameters**.
-  - Use an object to return complex results.
-  - Declare necessary types for input arguments and output.
-- Use a single level of abstraction.
-
-> Examples of good code style:
-
-```typescript
-function calculateTotal(items: Item[]): number {
-  return items.reduce(
-    (total: number, item: Item) => total + item.price * item.quantity,
-    0
-  );
-}
-
-function processItems(items: Item[]): void {
-  const total: number = calculateTotal(items);
-  console.log(`Total: ${total}`);
-}
-
-type UserMessage = {
-  user: User;
-  message: string;
-};
-
-type ApiResponse = {
-  success: boolean;
-  message: string;
-};
-
-function sendMessageToUser(userMessage: UserMessage): ApiResponse {
-  if (!userMessage.user || !userMessage.message) {
-    return { success: false, message: "Invalid user or message" };
-  }
-  if (userMessage.user.age < 18) {
-    return { success: false, message: "User is too young to receive messages" };
-  }
-  sendMessage(userMessage.message);
-  return { success: true, message: "Message sent" };
-}
-```
-
-### Classes
-
-- Follow SOLID principles.
-- Prefer composition over inheritance.
-- Declare each behavior in an `interface` and implement it in a class.
-- Write _small classes_ with a single purpose.
-  - **Less than 200 instructions**.
-  - **Less than 10 public methods**.
-  - **Less than 10 properties**.
-- Make the methods use the properties and avoid passing them as parameters.
-
-### Exceptions
-
-- Avoid throwing exceptions:
-  - Validating inputs.
-  - Checking assumptions.
-  - Only throw exceptions for exceptional conditions.
-- Use a global handler to catch exceptions
-  - Log the error.
-  - Inform the user if applicable.
-- If you catch an exception, it should be to:
-  - Fix an expected problem (ex. roll back a transaction, create a file, etc.)
-  - Add context and rethrow.
-  - Do not hide errors, correct or propagate them.
-  - Log and report them.
-
-> Example of robust code:
-
-```typescript
-function calculateAveragePrice(items: Item[]): number {
-  if (items.length === 0) {
-    throw new Error("No items to calculate average price");
-  }
-  const totalPrice = items.reduce(
-    (total: number, item: Item) => total + item.price,
-    0
-  );
-  const averagePrice = totalPrice / items.length;
-  return averagePrice;
-}
-function writeReport(reportEntry: string): void {
-  const reportPath = path.join(__dirname, "report.txt");
-  if (fs.existsSync(reportPath)) {
-    fs.appendFileSync(reportPath, reportEntry);
-  } else {
-    console.warn("Report file not found. Skipping write.");
-  }
-}
-function reportAveragePrice(): void {
-  const items = [
-    { price: 10, quantity: 2 },
-    { price: 20, quantity: 1 },
-    { price: 30, quantity: 3 },
-  ];
-  const averagePrice = calculateAveragePrice(items);
-  writeReport(`${new Date().toISOString()} Average price: ${averagePrice}`);
-}
-function globalErrorHandler(error: Error): void {
-  console.error(error);
-  // Inform the user
-}
-```
-
-### Logging
-
-- Use a logger for monitoring the application.
-- Each entry should have a timestamp, level, message, and optional data.
-- Error entries should include the stack if available.
-- Log user/client interactions. (ex. api calls, button clicks, etc.)
-- Log critical or rare events.
-- In development or debug mode log all events.
-- In production mode log errors and critical events.
-
-### Testing
-
-- Generate a test file with a main `describe` block for each class.
-  - use `describe` blocks for each method.
-  - use `it` blocks for each test case.
-  - use few `expect` assertions per test case.
-- Follow the `Arrange-Act-Assert` convention and document each test.
-- Name test variables clearly.
-  - Follow the convention: `inputX`, `mockX`, `actualX`, `expectedX`, etc.
-- For unit tests use test doubles to simulate dependencies.
-  - Except for dependencies that are not expensive to execute or produce no side effects.
-- Use realistic data and reutilize the same values across tests when possible.
+- Do end-to-end tests for user interactions with Cypress (or Playwright).
+- Do integration tests for logic services (with real dependencies), but mock http services.
+- Do unit tests for entities and utilities.
+- Consider when make sense to unit test your declarables (components, directives, and pipes).
