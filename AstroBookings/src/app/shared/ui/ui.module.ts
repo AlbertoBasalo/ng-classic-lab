@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { PageHeaderComponent } from './page-header.component';
+import { AtomsModule } from '../atoms/atoms.module';
+import { PageHeaderBlock } from './page-header.block';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [PageHeaderComponent],
-  exports: [PageHeaderComponent],
+  imports: [CommonModule, AtomsModule],
+  declarations: [PageHeaderBlock],
+  exports: [PageHeaderBlock],
 })
 export class UiModule {}

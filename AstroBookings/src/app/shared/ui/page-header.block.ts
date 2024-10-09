@@ -10,6 +10,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PageHeaderComponent {
+export class PageHeaderBlock {
   @Input() title = '';
 }
