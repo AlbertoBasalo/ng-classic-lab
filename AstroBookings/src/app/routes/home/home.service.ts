@@ -1,9 +1,15 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { LaunchDto } from 'src/app/shared/models/launch.dto';
+import { LaunchesRepository } from 'src/app/shared/services/launches.repository';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HomeService {
+  constructor(private readonly launchesRepository: LaunchesRepository) {}
 
-  constructor() { }
+  loadNextLaunches$(): Observable<LaunchDto[]> {
+    return this.launchesRepository.getNextLaunches$();
+  }
 }
