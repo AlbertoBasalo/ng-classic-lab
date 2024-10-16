@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { delay, Observable, of } from 'rxjs';
 import { LaunchDto, LaunchStatus } from '../models/launch.dto';
+import { LaunchesRepository } from './launches.repository';
 
 @Injectable()
-export class LaunchesMemRepository {
+export class LaunchesMemRepository extends LaunchesRepository {
   private readonly launches: LaunchDto[] = [
     {
       id: '1',

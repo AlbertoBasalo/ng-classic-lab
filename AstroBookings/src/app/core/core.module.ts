@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { LaunchesMemRepository } from '@app/services/launches.mem.repository';
+import { launchesRepositoryFactory } from '@app/services/launches-repository.factory';
 import { LaunchesRepository } from '@app/services/launches.repository';
 import { LayoutModule } from './layout/layout.module';
 
 @NgModule({
-  imports: [CommonModule, LayoutModule],
+  imports: [CommonModule, LayoutModule, HttpClientModule],
   exports: [LayoutModule],
   providers: [
     {
       provide: LaunchesRepository,
-      useClass: LaunchesMemRepository,
+      useFactory: launchesRepositoryFactory,
+      deps: [HttpClient],
     },
   ],
 })
