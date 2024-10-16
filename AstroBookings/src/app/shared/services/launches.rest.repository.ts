@@ -14,6 +14,6 @@ export class LaunchesRestRepository extends LaunchesRepository {
   }
 
   getLaunchesByStatus$(status: LaunchStatus): Observable<LaunchDto[]> {
-    return this.http.get<LaunchDto[]>(`${this.baseUrl}?status=${status}`);
+    return this.http.get<LaunchDto[]>(`${this.baseUrl}?q=${status}`);
   }
 }
