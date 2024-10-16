@@ -4,6 +4,10 @@ import { LogService } from '@app/services/log.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
+/**
+ * An Http Interceptor that logs the HTTP requests and errors
+ * @requires LogService
+ */
 @Injectable()
 export class LogHttpInterceptor implements HttpInterceptor {
   constructor(private logService: LogService) {}

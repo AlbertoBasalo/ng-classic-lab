@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 export class HomeService {
   constructor(
     private readonly launchesRepository: LaunchesRepository,
-    private logService: LogService,
+    private readonly logService: LogService,
   ) {
     this.logService.log('Initialized');
   }

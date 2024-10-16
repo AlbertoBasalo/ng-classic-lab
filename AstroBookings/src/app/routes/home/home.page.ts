@@ -4,6 +4,12 @@ import { LOG_SOURCE, LogService } from '@app/services/log.service';
 import { Observable } from 'rxjs';
 import { HomeService } from './home.service';
 
+/**
+ * Home Page, displays the home page
+ * @requires HomeService to load the next launches
+ * @requires LogService to log changes
+ * @requires LOG_SOURCE to identify the source of the log
+ */
 @Component({
   templateUrl: './home.page.html',
   styles: [],
@@ -13,7 +19,7 @@ import { HomeService } from './home.service';
 export class HomePage {
   nextLaunches$: Observable<LaunchDto[]> = this.homeService.loadNextLaunches$();
 
-  constructor(private readonly homeService: HomeService, private logService: LogService) {
+  constructor(private readonly homeService: HomeService, private readonly logService: LogService) {
     this.logService.log('Initialized');
   }
 }

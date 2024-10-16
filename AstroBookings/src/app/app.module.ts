@@ -5,10 +5,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 
+/**
+ * Root Module just used to bootstrap the application
+ */
 @NgModule({
   imports: [AppRoutingModule, BrowserModule, CoreModule],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
-  providers: [],
 })
 export class AppModule {}
