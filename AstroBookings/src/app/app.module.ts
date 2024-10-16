@@ -9,5 +9,6 @@ import { CoreModule } from './core/core.module';
   imports: [AppRoutingModule, BrowserModule, CoreModule],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
+  providers: [],
 })
 export class AppModule {}

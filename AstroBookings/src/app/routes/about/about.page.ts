@@ -1,14 +1,17 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { LogService } from '@app/services/log.service';
 import { AboutService } from './about.service';
 
 @Component({
   templateUrl: './about.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [LogService],
 })
 export class AboutPage {
   aboutInfo: string;
 
-  constructor(private readonly aboutService: AboutService) {
+  constructor(private readonly aboutService: AboutService, private logService: LogService) {
+    this.logService.log('AboutPage Initialized');
     this.aboutInfo = this.aboutService.getAboutInfo();
   }
 }

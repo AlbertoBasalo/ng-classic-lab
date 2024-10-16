@@ -7,6 +7,7 @@ export class AboutService {
   constructor() {}
 
   getAboutInfo(): string {
-    return 'This is information about our company.';
+    throw new Error('This is a test error');
+    // return 'This is information about our company.';
   }
 }
