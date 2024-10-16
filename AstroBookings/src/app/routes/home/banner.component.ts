@@ -1,33 +1,20 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { LaunchDto } from '@app/models/launch.dto';
+import { LOG_SOURCE, LogService } from '@app/services/log.service';
 
 @Component({
   selector: 'app-banner',
   templateUrl: './banner.component.html',
   styles: [],
+  providers: [{ provide: LOG_SOURCE, useValue: 'BannerComponent' }, LogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BannerComponent {
-  @Input() nextLaunches: LaunchDto[] = [
-    {
-      id: '1',
-      agencyId: '1',
-      rocketId: '1',
-      date: new Date(),
-      mission: 'Mission 1',
-      destination: 'Destination 1',
-      pricePerSeat: 100,
-      status: 'scheduled',
-    },
-    {
-      id: '2',
-      agencyId: '2',
-      rocketId: '2',
-      date: new Date(),
-      mission: 'Mission 2',
-      destination: 'Destination 2',
-      pricePerSeat: 200,
-      status: 'scheduled',
-    },
-  ];
+export class BannerComponent implements OnChanges {
+  @Input() nextLaunches: LaunchDto[] = [];
+
+  constructor(private logService: LogService) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.logService.log(`Received ${changes['nextLaunches'].currentValue.length} launches`);
+  }
 }

@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { launchesRepositoryFactory } from '@app/services/launches-repository.factory';
 import { LaunchesRepository } from '@app/services/launches.repository';
+import { launchesRepositoryFactory } from './launches-repository.factory';
 import { LayoutModule } from './layout/layout.module';
 
 @NgModule({
