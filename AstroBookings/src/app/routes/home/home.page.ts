@@ -10,5 +10,5 @@ import { HomeService } from './home.service';
 })
 export class HomePage {
   nextLaunches$: Observable<LaunchDto[]> = this.homeService.loadNextLaunches$();
-  constructor(public readonly homeService: HomeService) {}
+  constructor(private readonly homeService: HomeService) {}
 }
