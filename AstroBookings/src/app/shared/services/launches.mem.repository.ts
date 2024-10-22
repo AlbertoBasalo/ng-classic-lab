@@ -3,6 +3,10 @@ import { delay, Observable, of } from 'rxjs';
 import { LaunchDto, LaunchStatus } from '../models/launch.dto';
 import { LaunchesRepository } from './launches.repository';
 
+/**
+ * Launches Memory Repository, provides methods to get launches from memory
+ * - Used for testing purposes
+ */
 @Injectable()
 export class LaunchesMemRepository extends LaunchesRepository {
   private readonly launches: LaunchDto[] = [

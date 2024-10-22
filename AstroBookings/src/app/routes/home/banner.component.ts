@@ -12,7 +12,7 @@ import { LOG_SOURCE, LogService } from '@app/services/log.service';
   selector: 'app-banner',
   templateUrl: './banner.component.html',
   styles: [],
-  providers: [{ provide: LOG_SOURCE, useValue: 'BannerComponent' }, LogService],
+  providers: [{ provide: LOG_SOURCE, useValue: '🪧 BannerComponent' }, LogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BannerComponent implements OnChanges {

@@ -14,7 +14,7 @@ import { HomeService } from './home.service';
   templateUrl: './home.page.html',
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [{ provide: LOG_SOURCE, useValue: 'HomePage' }, LogService],
+  providers: [{ provide: LOG_SOURCE, useValue: '🏠 Home Page' }, LogService],
 })
 export class HomePage {
   nextLaunches$: Observable<LaunchDto[]> = this.homeService.loadNextLaunches$();

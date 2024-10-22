@@ -3,6 +3,7 @@ import { LogService } from '@app/services/log.service';
 
 /**
  * Custom Error Handler, logs the error using the LogService
+ * @implements ErrorHandler
  * @requires LogService
  */
 export class CustomErrorHandler implements ErrorHandler {

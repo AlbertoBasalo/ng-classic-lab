@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from '@app/services/local-storage.service';
-import { Subscription } from 'rxjs';
+import { environment } from 'environments/environment';
+import { catchError, Observable, of, Subscription, tap } from 'rxjs';
 
 type AppInitializer = () => Subscription;
 
@@ -8,19 +9,24 @@ type AppInitializer = () => Subscription;
  * App Initializer Factory, creates a function that will be used to initialize the application
  * @param http - HttpClient
  * @param localStorage - LocalStorageService
- * @returns - Function that initializes the application returning a Subscription
+ * @returns - A function that initializes the application returning an observable
  */
 export function appInitializerFactory(
   http: HttpClient,
   localStorage: LocalStorageService,
-): AppInitializer {
-  let initializerFunction: AppInitializer;
-  initializerFunction = () => storeTime(http, localStorage);
+): () => Observable<unknown> {
+  const initializerFunction = () => storeTime(http, localStorage);
   return initializerFunction;
 }
 
-function storeTime(http: HttpClient, localStorage: LocalStorageService): Subscription {
-  return http
-    .get('http://worldtimeapi.org/api/timezone/Europe/Madrid')
-    .subscribe((data) => localStorage.write('time', data));
+function storeTime(http: HttpClient, localStorage: LocalStorageService): Observable<unknown> {
+  const timeZone = environment.timeZone;
+  const url = `https://worldtimeapi.org/api/timezone/${timeZone}`;
+  return http.get(url).pipe(
+    tap((data) => localStorage.write('time', data)),
+    catchError((error) => {
+      console.error(error);
+      return of(null);
+    }),
+  );
 }

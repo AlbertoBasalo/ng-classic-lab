@@ -4,6 +4,11 @@ import { LaunchesRepository } from '@app/services/launches.repository';
 import { LogService } from '@app/services/log.service';
 import { Observable } from 'rxjs';
 
+/**
+ * Home Service, loads the next launches
+ * @requires LaunchesRepository to load the launches
+ * @requires LogService to log changes
+ */
 @Injectable({
   providedIn: 'root',
 })
