@@ -30,7 +30,7 @@ import { LogHttpInterceptor } from './log-http.interceptor';
     },
     {
       provide: LOG_SOURCE,
-      useValue: 'CoreModule',
+      useValue: '💟 CoreModule',
     },
     {
       provide: ErrorHandler,

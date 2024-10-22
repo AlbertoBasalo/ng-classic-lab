@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { LogService } from '@app/services/log.service';
 
 @Component({
   selector: 'app-page-header',
@@ -12,4 +13,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class PageHeaderBlock {
   @Input() title = '';
+  constructor(private readonly logService: LogService) {
+    this.logService.log('PageHeaderBlock initialized');
+  }
 }

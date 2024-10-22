@@ -14,15 +14,20 @@ export const LOG_SOURCE = new InjectionToken<string>('logSource');
 })
 export class LogService {
   constructor(@Optional() @Inject(LOG_SOURCE) private source: string) {
-    this.source = source ?? 'Unknown';
+    this.source = source || 'Unknown';
   }
 
   log(message: string): void {
     console.log(`[${this.source}] ${message}`);
   }
 
-  error(message: string): void {
-    console.error(`[${this.source}] ${message}`);
+  error(message: string | Error): void {
+    try {
+      const errorJson = JSON.stringify(message);
+      console.error(`[${this.source}] ${errorJson}`);
+    } catch (error) {
+      console.error(`[${this.source}] ${message}`);
+    }
   }
 
   warn(message: string): void {
