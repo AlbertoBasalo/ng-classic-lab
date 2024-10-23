@@ -35,8 +35,8 @@ export class LaunchesRestRepository extends LaunchesRepository {
   getLaunchById$(id: string): Observable<LaunchDto> {
     const forcedDelay = '&delay=2000'; // '&delay=1000';
     const forcedStatus = ''; //'&status=418';
-    const forcedEmpty = ''; // 'kk';
-    const url = `${this.baseUrl}/${id}?${forcedEmpty}${forcedDelay}${forcedStatus}`;
+    const forcedEmpty = 'kk'; // 'kk';
+    const url = `${this.baseUrl}/${id}${forcedEmpty}?${forcedDelay}${forcedStatus}`;
     console.log('getLaunchById$ with ', url);
     return this.http.get<LaunchDto>(url);
   }
