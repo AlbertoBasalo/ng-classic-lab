@@ -1,4 +1,18 @@
 <app-page-header title="Welcome to AstroBookings"></app-page-header>
-<div *ngIf="(nextLaunches$ | async) as nextLaunches">
-  <app-banner [nextLaunches]="nextLaunches"></app-banner>
-</div>
+<ng-container *ngIf="(nextLaunches$ | async) as nextLaunches">
+  <ng-container *ngIf="nextLaunches.length>0; else empty">
+    <app-banner [nextLaunches]="nextLaunches"></app-banner>
+  </ng-container>
+  <ng-template #empty>
+    <input readonly type="text" name="empty" value="No data found" />
+  </ng-template>
+</ng-container>
+<aside *ngIf="isWorking$ | async" aria-busy="true">Loading...</aside>
+<input
+  *ngIf="error$ | async as error"
+  readonly
+  type="text"
+  name="error"
+  [value]="error"
+  aria-invalid="true"
+/>

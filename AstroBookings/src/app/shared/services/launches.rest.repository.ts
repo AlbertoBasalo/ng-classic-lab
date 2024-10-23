@@ -14,6 +14,7 @@ export class LaunchesRestRepository extends LaunchesRepository {
   private readonly baseUrl = `${environment.apiUrl}/launches`;
 
   constructor(private http: HttpClient) {
+    console.log('LaunchesRestRepository initialized');
     super();
   }
 
@@ -23,6 +24,12 @@ export class LaunchesRestRepository extends LaunchesRepository {
    * @returns - An observable that emits the launches
    */
   getLaunchesByStatus$(status: LaunchStatus): Observable<LaunchDto[]> {
-    return this.http.get<LaunchDto[]>(`${this.baseUrl}?q=${status}`);
+    const forcedDelay = '&delay=1000'; // '&delay=1000';
+    const forcedStatus = '&status=418'; //'&status=418';
+    const forcedEmpty = ''; // 'kk';
+    console.log('getLaunchesByStatus$ with ', forcedDelay);
+    return this.http.get<LaunchDto[]>(
+      `${this.baseUrl}?q=${status}${forcedEmpty}${forcedDelay}${forcedStatus}`,
+    );
   }
 }

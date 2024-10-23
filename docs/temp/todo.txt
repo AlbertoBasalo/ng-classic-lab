@@ -1,0 +1,21 @@
+https://blog.angular-university.io/angular-ng-template-ng-container-ngtemplateoutlet/
+https://github.com/AlbertoBasalo/ng-dev/blob/main/src/app/shared/ui/list.component.ts
+https://www.notion.so/albertobasalo/Angular-Escalable-ef905bb0b90846b2ac423ed35c276a6e
+
+AsyncTemplateComponent
+ListComponent
+CardComponent
+
+
+Manage async status
+loading, error, empty, list, item
+
+ng-template
+ng-content
+ng-container
+ngTemplateOutlet (template, context)
+@Input() template: TemplateRef<any>;
+
+
+Using resolver with routes to get data before loading the component
+
