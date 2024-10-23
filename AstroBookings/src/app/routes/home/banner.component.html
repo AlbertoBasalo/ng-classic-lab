@@ -27,10 +27,15 @@
       <header>
         <h3>{{ launch.mission }}</h3>
       </header>
-      <p>{{ launch.destination }}</p>
-      <p>{{ launch.date | date : 'dd MMM yyyy' }}</p>
-      <p>{{ launch.pricePerSeat | currency : 'USD' : 'symbol' : '1.0-0' }}</p>
-      <p>Status: {{ launch.status }}</p>
+      <main>
+        <p>{{ launch.destination }}</p>
+        <p>{{ launch.date | date : 'dd MMM yyyy' }}</p>
+        <p>{{ launch.pricePerSeat | currency : 'USD' : 'symbol' : '1.0-0' }}</p>
+        <p>Status: {{ launch.status }}</p>
+      </main>
+      <footer>
+        <app-link text="🚀 Go" [link]="['/', 'launches', launch.id]"></app-link>
+      </footer>
     </article>
   </ng-template>
 </section>
