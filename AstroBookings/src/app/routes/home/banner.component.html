@@ -1,4 +1,4 @@
-<section>
+<!-- <section>
   <h2>Next {{ nextLaunches.length }} Launches</h2>
   <section
     style="display: grid; grid-template-columns: repeat(auto-fill, minmax(512px, 1fr)); gap: 16px"
@@ -17,4 +17,20 @@
       </footer>
     </article>
   </section>
+</section> -->
+<section>
+  <app-list-block [items]="nextLaunches" [template]="launchCardTemplate">
+    <h2>Next {{ nextLaunches.length }} Launches</h2>
+  </app-list-block>
+  <ng-template #launchCardTemplate let-launch>
+    <article>
+      <header>
+        <h3>{{ launch.mission }}</h3>
+      </header>
+      <p>{{ launch.destination }}</p>
+      <p>{{ launch.date | date : 'dd MMM yyyy' }}</p>
+      <p>{{ launch.pricePerSeat | currency : 'USD' : 'symbol' : '1.0-0' }}</p>
+      <p>Status: {{ launch.status }}</p>
+    </article>
+  </ng-template>
 </section>

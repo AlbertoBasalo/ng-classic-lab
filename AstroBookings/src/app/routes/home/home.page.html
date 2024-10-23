@@ -22,19 +22,6 @@
 
 <app-async-block [source$]="nextLaunches$" [template]="result">
   <ng-template #result let-nextLaunches>
-    <app-list-block [items]="nextLaunches" [template]="launchCardTemplate">
-      <h2>Next {{ nextLaunches.length }} Launches</h2>
-    </app-list-block>
+    <app-banner [nextLaunches]="nextLaunches"></app-banner>
   </ng-template>
 </app-async-block>
-<ng-template #launchCardTemplate let-launch>
-  <article>
-    <header>
-      <h3>{{ launch.mission }}</h3>
-    </header>
-    <p>{{ launch.destination }}</p>
-    <p>{{ launch.date | date : 'dd MMM yyyy' }}</p>
-    <p>{{ launch.pricePerSeat | currency : 'USD' : 'symbol' : '1.0-0' }}</p>
-    <p>Status: {{ launch.status }}</p>
-  </article>
-</ng-template>
