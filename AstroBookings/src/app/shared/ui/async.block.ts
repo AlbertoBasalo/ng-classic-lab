@@ -11,10 +11,10 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
     <input *ngIf="error$ | async as error" readonly [value]="error" aria-invalid="true" />
   `,
 })
-export class AsyncBlockComponent implements OnChanges {
-  @Input() source$!: Observable<any>;
-  @Input() template!: TemplateRef<any>;
-  target$!: Observable<any>;
+export class AsyncBlock implements OnChanges {
+  @Input() source$!: Observable<unknown>;
+  @Input() template!: TemplateRef<unknown>;
+  target$!: Observable<unknown>;
   isWorking$ = new BehaviorSubject<boolean>(false);
   error$ = new BehaviorSubject<string | null>(null);
 

@@ -8,7 +8,7 @@
 <aside *ngIf="isWorking$ | async" aria-busy="true">Loading...</aside>
 <input *ngIf="error$ | async as error" readonly [value]="error" aria-invalid="true" /> -->
 
-<app-async-block [source$]="nextLaunches$" [template]="result">
+<!-- <app-async-block [source$]="nextLaunches$" [template]="result">
   <ng-template #result let-nextLaunches>
     <app-banner
       *ngIf="nextLaunches.length>0; else empty"
@@ -18,4 +18,23 @@
       <input readonly type="text" name="empty" value="No data found" />
     </ng-template>
   </ng-template>
+</app-async-block> -->
+
+<app-async-block [source$]="nextLaunches$" [template]="result">
+  <ng-template #result let-nextLaunches>
+    <app-list-block [items]="nextLaunches" [template]="launchCardTemplate">
+      <h2>Next {{ nextLaunches.length }} Launches</h2>
+    </app-list-block>
+  </ng-template>
 </app-async-block>
+<ng-template #launchCardTemplate let-launch>
+  <article>
+    <header>
+      <h3>{{ launch.mission }}</h3>
+    </header>
+    <p>{{ launch.destination }}</p>
+    <p>{{ launch.date | date : 'dd MMM yyyy' }}</p>
+    <p>{{ launch.pricePerSeat | currency : 'USD' : 'symbol' : '1.0-0' }}</p>
+    <p>Status: {{ launch.status }}</p>
+  </article>
+</ng-template>
