@@ -1,0 +1,4 @@
+<ng-container *ngIf="launch$ | async as launch">
+  <h1>{{ launch.mission}}</h1>
+  <app-launch-details [launch]="launch"></app-launch-details>
+</ng-container>

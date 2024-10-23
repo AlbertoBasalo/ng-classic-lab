@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { delay, Observable, of } from 'rxjs';
+import { delay, Observable, of, throwError } from 'rxjs';
 import { LaunchDto, LaunchStatus } from '../models/launch.dto';
 import { LaunchesRepository } from './launches.repository';
 
@@ -44,5 +44,13 @@ export class LaunchesMemRepository extends LaunchesRepository {
 
   getLaunchesByStatus$(status: LaunchStatus): Observable<LaunchDto[]> {
     return of(this.launches.filter((launch) => launch.status === status)).pipe(delay(2000));
+  }
+
+  getLaunchById$(id: string): Observable<LaunchDto> {
+    const foundLaunch = this.launches.find((launch) => launch.id === id);
+    if (foundLaunch) {
+      return of(foundLaunch);
+    }
+    return throwError(() => new Error('Launch not found'));
   }
 }
