@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LaunchDto } from '@app/models/launch.dto';
 import { LOG_SOURCE, LogService } from '@app/services/log.service';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HomeService } from './home.service';
 
 /**
@@ -18,20 +18,20 @@ import { HomeService } from './home.service';
 })
 export class HomePage {
   nextLaunches$: Observable<LaunchDto[] | undefined>;
-  isWorking$ = new BehaviorSubject<boolean>(false);
-  error$ = new BehaviorSubject<string | null>(null);
+  // isWorking$ = new BehaviorSubject<boolean>(false);
+  //error$ = new BehaviorSubject<string | null>(null);
 
   constructor(private readonly homeService: HomeService, private readonly logService: LogService) {
-    this.logService.log('Initialized');
-    this.isWorking$.next(true);
-    this.nextLaunches$ = this.homeService.loadNextLaunches$().pipe(
+    //this.logService.log('Initialized');
+    //this.isWorking$.next(true);
+    this.nextLaunches$ = this.homeService.loadNextLaunches$();
+    /* .pipe(
       tap({
         next: () => this.isWorking$.next(false),
         error: (error) => {
           this.isWorking$.next(false);
           this.error$.next(error.statusText || error.message || 'Unknown error');
         },
-      }),
-    );
+      }), */
   }
 }
