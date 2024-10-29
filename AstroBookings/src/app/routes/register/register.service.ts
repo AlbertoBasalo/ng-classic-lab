@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { RegisterDto } from './register.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -6,10 +7,10 @@ import { Injectable } from '@angular/core';
 export class RegisterService {
   constructor() {}
 
-  register(username: string, email: string, password: string): boolean {
+  register(registerDto: RegisterDto): boolean {
     // This is a placeholder implementation
     // In a real application, you would typically make an API call here
-    console.log(`Attempting to register user: ${username} with email: ${email}`);
-    return username.length > 0 && email.includes('@') && password.length >= 8;
+    console.log(`Attempting to register user with email: ${registerDto.email}`);
+    return true;
   }
 }

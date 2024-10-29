@@ -51,7 +51,8 @@ export class RegisterFormComponent {
   constructor(private readonly formBuilder: FormBuilder) {}
 
   onSubmit(): void {
-    this.register.emit(this.registerForm.value as RegisterDto);
+    const { repeatPassword, ...rest } = this.registerForm.value;
+    this.register.emit(rest as RegisterDto);
   }
 }
 
@@ -63,12 +64,13 @@ export class RegisterFormComponent {
  * @returns The validation errors or null if the form is valid
  */
 const matchPasswordValidator: ValidatorFn = (form: AbstractControl) => {
-  const password = form.get('password')?.value;
-  const repeatPassword = form.get('repeatPassword')?.value;
-  console.log('matchPasswordValidator', password, repeatPassword);
+  const passwordControl = form.get('password')!;
+  const repeatPasswordControl = form.get('repeatPassword')!;
+  const password = passwordControl.value;
+  const repeatPassword = repeatPasswordControl.value;
   const error = password !== repeatPassword ? { matchPassword: 'Passwords do not match' } : null;
   if (error) {
-    form.get('repeatPassword')?.setErrors(error);
+    repeatPasswordControl.setErrors(error);
   }
   return error;
 };
