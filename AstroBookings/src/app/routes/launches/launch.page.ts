@@ -9,22 +9,18 @@ import { LaunchService } from './launch.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LaunchPage {
+  /**
+   * Launch ID, from the route
+   */
   launchId: string;
+  /**
+   * Observable to get the launch by ID
+   */
   launch$: Observable<LaunchDto>;
-  // isWorking$ = new BehaviorSubject<boolean>(false);
-  //error$ = new BehaviorSubject<string | null>(null);
 
   constructor(private route: ActivatedRoute, private launchService: LaunchService) {
     this.launchId = this.route.snapshot.paramMap.get('id') || '';
-    // this.isWorking$.next(true);
+
     this.launch$ = this.launchService.getLaunchById$(this.launchId);
-    /* .pipe(
-      tap({
-        next: () => this.isWorking$.next(false),
-        error: (error) => {
-          this.isWorking$.next(false);
-          this.error$.next(error.statusText || error.message || 'Unknown error');
-        },
-      }), */
   }
 }

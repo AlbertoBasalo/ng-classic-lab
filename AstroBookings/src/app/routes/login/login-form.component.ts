@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { EmailValidator, passwordValidator } from 'app/shared/utils/validators.functions';
+import { LoginDto } from './login.dto';
 
 @Component({
   selector: 'app-login-form',
@@ -7,16 +9,33 @@ import { FormBuilder, Validators } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginFormComponent {
-  @Output() login = new EventEmitter<{ username: string; password: string }>();
+  @Output() login = new EventEmitter<LoginDto>();
 
   loginForm = this.formBuilder.group({
-    username: ['', Validators.required],
-    password: ['', Validators.required],
+    email: new FormControl('', {
+      validators: [Validators.required, Validators.email],
+      asyncValidators: [this.emailValidators.validate],
+      updateOn: 'blur',
+    }),
+    password: new FormControl('', [Validators.required, passwordValidator]),
   });
 
-  constructor(private readonly formBuilder: FormBuilder) {}
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    private readonly emailValidators: EmailValidator,
+  ) {}
 
-  onSubmit(username: string, password: string): void {
-    this.login.emit({ username, password });
+  get email(): AbstractControl {
+    return this.loginForm.get('email')!;
+  }
+
+  get password(): AbstractControl {
+    return this.loginForm.get('password')!;
+  }
+
+  onSubmit(): void {
+    if (this.loginForm.invalid) return;
+    const value: LoginDto = this.loginForm.value as LoginDto;
+    this.login.emit(value);
   }
 }

@@ -1,5 +1,10 @@
 import { Component, Input, TemplateRef } from '@angular/core';
 
+/**
+ * Synchronous component to display a list of items
+ * - Uses the template given to display the items
+ * - Checks if there are items to display
+ */
 @Component({
   selector: 'app-list-block',
   template: `
@@ -15,6 +20,12 @@ import { Component, Input, TemplateRef } from '@angular/core';
   `,
 })
 export class ListBlock {
+  /**
+   * List of items to display
+   */
   @Input() items!: unknown[];
+  /**
+   * Template to display the items
+   */
   @Input() template!: TemplateRef<unknown>;
 }

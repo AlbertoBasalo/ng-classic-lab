@@ -17,21 +17,13 @@ import { HomeService } from './home.service';
   providers: [{ provide: LOG_SOURCE, useValue: '🏠 Home Page' }, LogService],
 })
 export class HomePage {
+  /**
+   * Observable to get the next launches
+   */
   nextLaunches$: Observable<LaunchDto[] | undefined>;
-  // isWorking$ = new BehaviorSubject<boolean>(false);
-  //error$ = new BehaviorSubject<string | null>(null);
 
   constructor(private readonly homeService: HomeService, private readonly logService: LogService) {
-    //this.logService.log('Initialized');
-    //this.isWorking$.next(true);
+    this.logService.log('Initialized');
     this.nextLaunches$ = this.homeService.loadNextLaunches$();
-    /* .pipe(
-      tap({
-        next: () => this.isWorking$.next(false),
-        error: (error) => {
-          this.isWorking$.next(false);
-          this.error$.next(error.statusText || error.message || 'Unknown error');
-        },
-      }), */
   }
 }
