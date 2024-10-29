@@ -1,4 +1,4 @@
-import { Role } from './role.enum';
+import { Role } from '@app/models/role.enum';
 
 /**
  * The input data required to register a new user
@@ -8,7 +8,7 @@ export type RegisterDto = {
    * The name of the user
    * @example 'John Doe'
    */
-  name: string;
+  username: string;
 
   /**
    * The email of the user
