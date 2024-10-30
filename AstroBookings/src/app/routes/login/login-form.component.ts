@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { EmailValidator, passwordValidator } from 'app/shared/utils/validators.functions';
+import { passwordValidator } from 'app/shared/utils/form.validators';
 import { LoginDto } from './login.dto';
 
 @Component({
@@ -12,18 +12,11 @@ export class LoginFormComponent {
   @Output() login = new EventEmitter<LoginDto>();
 
   loginForm = this.formBuilder.group({
-    email: new FormControl('', {
-      validators: [Validators.required, Validators.email],
-      asyncValidators: [this.emailValidators.validate],
-      updateOn: 'blur',
-    }),
+    email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, passwordValidator]),
   });
 
-  constructor(
-    private readonly formBuilder: FormBuilder,
-    private readonly emailValidators: EmailValidator,
-  ) {}
+  constructor(private readonly formBuilder: FormBuilder) {}
 
   get email(): AbstractControl {
     return this.loginForm.get('email')!;

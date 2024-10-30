@@ -5,6 +5,7 @@ import {
   AsyncValidator,
   AsyncValidatorFn,
   ValidationErrors,
+  ValidatorFn,
 } from '@angular/forms';
 import { map, Observable } from 'rxjs';
 
@@ -13,13 +14,36 @@ import { map, Observable } from 'rxjs';
  * @param control - The control to validate
  * @returns The validation errors or null if the control is valid
  */
-export const passwordValidator = (control: AbstractControl): ValidationErrors | null => {
+export const passwordValidator: ValidatorFn = (
+  control: AbstractControl,
+): ValidationErrors | null => {
   const value: string = control.value;
   const hasDigits = /\d/.test(value);
   if (!hasDigits) return { password: 'Password must contain digits' };
   const hasLetters = /[a-zA-Z]/.test(value);
   if (!hasLetters) return { password: 'Password must contain letters' };
   return null;
+};
+
+/**
+ * Validator to check if the password and repeat password are the same
+ * - Also sets the error on the repeat password control.
+ * - Could be made more abstract to match any two controls
+ * @param form - The form to validate
+ * @returns The validation errors or null if the form is valid
+ */
+export const matchPasswordValidator: ValidatorFn = (
+  form: AbstractControl,
+): ValidationErrors | null => {
+  const passwordControl = form.get('password')!;
+  const repeatPasswordControl = form.get('repeatPassword')!;
+  const password = passwordControl.value;
+  const repeatPassword = repeatPasswordControl.value;
+  const error = password !== repeatPassword ? { matchPassword: 'Passwords do not match' } : null;
+  if (error) {
+    repeatPasswordControl.setErrors(error);
+  }
+  return error;
 };
 
 @Injectable({
