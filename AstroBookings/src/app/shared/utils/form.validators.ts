@@ -49,7 +49,7 @@ export const matchPasswordValidator: ValidatorFn = (
 @Injectable({
   providedIn: 'root',
 })
-export class EmailValidator implements AsyncValidator {
+export class EmailAsyncValidator implements AsyncValidator {
   constructor(private readonly http: HttpClient) {}
 
   /**

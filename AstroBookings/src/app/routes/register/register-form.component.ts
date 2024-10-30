@@ -1,12 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
-import {
-  AbstractControl,
-  EmailValidator,
-  FormBuilder,
-  FormControl,
-  Validators,
-} from '@angular/forms';
-import { matchPasswordValidator } from 'app/shared/utils/form.validators';
+import { AbstractControl, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { EmailAsyncValidator, matchPasswordValidator } from 'app/shared/utils/form.validators';
 import { RegisterDto } from './register.dto';
 
 @Component({
@@ -19,7 +13,7 @@ export class RegisterFormComponent {
 
   registerForm = this.formBuilder.group(
     {
-      username: new FormControl('', Validators.required),
+      username: new FormControl('A', [Validators.required, Validators.minLength(3)]),
       email: [
         '',
         {
@@ -64,11 +58,12 @@ export class RegisterFormComponent {
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private readonly emailValidators: EmailValidator,
+    private readonly emailValidators: EmailAsyncValidator,
   ) {}
 
   onSubmit(): void {
     const { repeatPassword, ...rest } = this.registerForm.value;
+    console.log('onSubmit', rest);
     this.register.emit(rest as RegisterDto);
   }
 }
