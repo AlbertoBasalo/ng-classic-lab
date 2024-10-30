@@ -2,5 +2,6 @@
   <ng-template #launchTemplate let-launch>
     <h1>{{ launch.mission}}</h1>
     <app-launch-details [launch]="launch"></app-launch-details>
+    <app-bookings-form [launch]="launch"></app-bookings-form>
   </ng-template>
 </app-async-block>

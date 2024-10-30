@@ -1,5 +1,10 @@
 import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormGroup,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-control',
@@ -53,6 +58,22 @@ export class ControlBlock implements ControlValueAccessor {
    * - Defaults to 'text'
    */
   @Input() type = 'text';
+
+  /**
+   * The name of the array to search for the control
+   * - Optional, only for sub-arrays
+   */
+  @Input() formArrayNameStr?: string;
+  /**
+   * The index of the control in the array
+   * - Optional, only for sub-arrays
+   */
+  @Input() formArrayIndexNbr?: number;
+  /**
+   * The name of the group to search for the control
+   * - Optional, only for nested groups
+   */
+  @Input() formGroupNameStr?: string;
 
   /**
    * The current value of the control
@@ -118,6 +139,19 @@ export class ControlBlock implements ControlValueAccessor {
     return JSON.stringify(this.getControl().errors || {});
   }
   private getControl() {
-    return this.form.controls[this.formControlName];
+    //console.log('getting control', this.formControlName);
+    let control: AbstractControl | null = this.form.get(this.formControlName);
+    if (!control) {
+      const searchArray = [];
+      if (this.formArrayNameStr) searchArray.push(this.formArrayNameStr);
+      if (this.formArrayIndexNbr !== undefined) searchArray.push(this.formArrayIndexNbr);
+      if (this.formGroupNameStr) searchArray.push(this.formGroupNameStr);
+      searchArray.push(this.formControlName);
+      control = this.form.get(searchArray);
+      if (!control) {
+        throw new Error(`Control ${this.formControlName} not found`);
+      }
+    }
+    return control;
   }
 }
