@@ -20,16 +20,26 @@ export class HomeService {
     this.logService.log('Initialized');
   }
 
+  /**
+   * Loads the next launches
+   * @param searchTerm - The search term
+   * @returns The launches
+   */
   loadNextLaunches$(searchTerm?: string): Observable<LaunchDto[]> {
-    console.log('Search Term', searchTerm);
+    this.logService.log(`Search Term:  ${searchTerm}`);
     return this.launchesRepository.getLaunchesByStatus$('scheduled').pipe(
-      // filter the launches by the search term. If the search term is not provided, return all launches
-      map((launches) => {
+      map((launches: LaunchDto[]) => {
+        // filter the launches by the search term or all launches if not provided
         if (!searchTerm) return launches;
-        return launches.filter((launch) =>
-          launch.mission.toLowerCase().includes(searchTerm.toLowerCase()),
-        );
+        return launches.filter((launch) => this.bySearchTerm(launch, searchTerm));
       }),
     );
+  }
+  bySearchTerm(launch: LaunchDto, searchTerm: string): boolean {
+    const mission = launch.mission.toLowerCase();
+    const destination = launch.destination.toLowerCase();
+    const termsArray = [mission, destination];
+    const searchTermLower = searchTerm.toLowerCase();
+    return termsArray.some((term) => term.includes(searchTermLower));
   }
 }

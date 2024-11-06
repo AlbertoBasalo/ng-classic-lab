@@ -7,7 +7,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { debounceTime, distinctUntilChanged, filter, fromEvent, map } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, fromEvent, map, tap } from 'rxjs';
 
 /**
  * A component that renders a search input
@@ -21,12 +21,18 @@ import { debounceTime, distinctUntilChanged, filter, fromEvent, map } from 'rxjs
  */
 @Component({
   selector: 'app-search',
-  template: `<input #searchInput type="search" [placeholder]="placeholder" />`,
+  template: `<input
+    #searchInput
+    type="search"
+    [placeholder]="placeholder"
+    [value]="currentSearchTerm"
+  />`,
 })
 export class SearchBlock implements AfterViewInit {
   // Inputs
   @Input() placeholder = 'Search';
 
+  @Input() currentSearchTerm: string = '';
   // Outputs
   /**
    * Emits the search term
@@ -49,10 +55,12 @@ export class SearchBlock implements AfterViewInit {
     const inputSource$ = fromEvent(this.searchInput.nativeElement, 'input');
     inputSource$
       .pipe(
-        map((event: any) => event.target.value.trim()),
+        map((event: any) => event.target as HTMLInputElement),
+        map((target: HTMLInputElement) => target.value.trim()),
         debounceTime(300),
         distinctUntilChanged(),
         filter((term) => term.length === 0 || term.length >= 3),
+        tap((term) => console.log(`fromEvent Search Term: ${term}`)),
       )
       .subscribe((term) => this.search.emit(term));
   }

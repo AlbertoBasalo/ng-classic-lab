@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LaunchDto } from '@app/models/launch.dto';
 import { LOG_SOURCE, LogService } from '@app/services/log.service';
-import { Observable, switchMap } from 'rxjs';
+import { map, Observable, switchMap, tap } from 'rxjs';
 import { HomeService } from './home.service';
 
 /**
@@ -23,6 +23,11 @@ export class HomePage {
    */
   nextLaunches$: Observable<LaunchDto[] | undefined>;
 
+  /**
+   * The current search term
+   */
+  searchTerm: string = '';
+
   constructor(
     private readonly homeService: HomeService,
     private readonly logService: LogService,
@@ -33,7 +38,9 @@ export class HomePage {
     // set the next launches observable to the home service
     // first get the search term from the url query params
     this.nextLaunches$ = this.route.queryParams.pipe(
-      switchMap((params) => this.homeService.loadNextLaunches$(params['q'])),
+      map((params) => params['q'] || ''),
+      tap((searchTerm) => (this.searchTerm = searchTerm)),
+      switchMap((searchTerm) => this.homeService.loadNextLaunches$(searchTerm)),
     );
   }
 
@@ -41,7 +48,9 @@ export class HomePage {
    * Handles the search event
    */
   onSearch(searchTerm: string) {
-    console.log('Search', searchTerm);
+    // check for valid search term
+    if (typeof searchTerm !== 'string') return;
+    this.logService.log(`on Search: ${searchTerm}`);
     // write the search term to url query params
     this.router.navigate([], { queryParams: { q: searchTerm } });
   }
