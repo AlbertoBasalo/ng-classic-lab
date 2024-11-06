@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { LaunchDto } from '@app/models/launch.dto';
 import { LaunchesRepository } from '@app/services/launches.repository';
 import { LogService } from '@app/services/log.service';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 /**
  * Home Service, loads the next launches
@@ -20,7 +20,16 @@ export class HomeService {
     this.logService.log('Initialized');
   }
 
-  loadNextLaunches$(): Observable<LaunchDto[]> {
-    return this.launchesRepository.getLaunchesByStatus$('scheduled');
+  loadNextLaunches$(searchTerm?: string): Observable<LaunchDto[]> {
+    console.log('Search Term', searchTerm);
+    return this.launchesRepository.getLaunchesByStatus$('scheduled').pipe(
+      // filter the launches by the search term. If the search term is not provided, return all launches
+      map((launches) => {
+        if (!searchTerm) return launches;
+        return launches.filter((launch) =>
+          launch.mission.toLowerCase().includes(searchTerm.toLowerCase()),
+        );
+      }),
+    );
   }
 }
