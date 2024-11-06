@@ -1,4 +1,5 @@
 <app-page-header title="Welcome to AstroBookings"></app-page-header>
+<app-search [placeholder]="'Search for a launch'" (search)="onSearch($event)"></app-search>
 <app-async-block [source$]="nextLaunches$" [template]="result">
   <ng-template #result let-nextLaunches>
     <app-banner [nextLaunches]="nextLaunches"></app-banner>

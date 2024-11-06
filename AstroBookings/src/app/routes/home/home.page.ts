@@ -26,4 +26,11 @@ export class HomePage {
     this.logService.log('Initialized');
     this.nextLaunches$ = this.homeService.loadNextLaunches$();
   }
+
+  /**
+   * Handles the search event
+   */
+  onSearch(searchTerm: string) {
+    console.log('Search', searchTerm);
+  }
 }
