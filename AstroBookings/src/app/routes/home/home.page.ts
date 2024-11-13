@@ -40,6 +40,7 @@ export class HomePage {
     this.nextLaunches$ = this.route.queryParams.pipe(
       map((params) => params['q'] || ''),
       tap((searchTerm) => (this.searchTerm = searchTerm)),
+      // switchMap to cancel previous requests when a new search term is emitted
       switchMap((searchTerm) => this.homeService.loadNextLaunches$(searchTerm)),
     );
   }
