@@ -12,11 +12,10 @@ export class RegisterService {
   constructor(private readonly http: HttpClient) {}
 
   register$(registerDto: RegisterDto): Observable<UserTokenDto> {
-    // This is a placeholder implementation
-    // In a real application, you would typically make an API call here
     console.log(`Attempting to register user with email: ${registerDto.email}`);
+    // delay to simulate a slow response, status to simulate a successful registration
     return this.http.post<UserTokenDto>(
-      `${environment.apiUrl}/register?delay=1000&status=201`,
+      `${environment.apiUrl}/register?delay=2000&status=201`,
       registerDto,
     );
   }

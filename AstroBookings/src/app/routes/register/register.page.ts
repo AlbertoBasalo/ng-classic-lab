@@ -8,12 +8,26 @@ import { RegisterService } from './register.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterPage {
+  /**
+   *  Subject to handle registration events
+   */
   private registerSubject = new Subject<RegisterDto>();
 
   constructor(private readonly registerService: RegisterService) {
-    this.registerSubject.pipe(exhaustMap((dto) => this.registerService.register$(dto))).subscribe();
+    // handle the stream throughout to avoid multiple requests
+    this.registerSubject
+      .pipe(
+        // exhaustMap to ignore new registration attempts while processing an existing one
+        exhaustMap((dto) => this.registerService.register$(dto)),
+      )
+      .subscribe();
   }
 
+  /**
+   *  Method to handle registration events
+   *  @param registerDto - The registration data
+   *  - Emits the registration data to the registerSubject
+   */
   onRegister(registerDto: RegisterDto): void {
     this.registerSubject.next(registerDto);
   }
