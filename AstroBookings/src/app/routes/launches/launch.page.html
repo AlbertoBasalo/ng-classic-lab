@@ -1,7 +1,5 @@
 <app-async-block [source$]="launch$" [template]="launchTemplate">
   <ng-template #launchTemplate let-launch>
-    <h1>{{ launch.mission}}</h1>
-    <app-launch-details [launch]="launch"></app-launch-details>
     <pre>Agency: {{ agency$ | async | json }}</pre>
     <pre>Rocket and Bookings: {{ rocketAndBookings$ | async | json }}</pre>
     <pre>Available Seats: {{ availableSeats$ | async }}</pre>
@@ -9,6 +7,8 @@
     <div *ngFor="let passenger of passengers">
       <pre>{{ passenger | json }}</pre>
     </div>
+    <h1>{{ launch.mission}}</h1>
+    <app-launch-details [launch]="launch"></app-launch-details>
     <app-bookings-form [launch]="launch"></app-bookings-form>
   </ng-template>
 </app-async-block>

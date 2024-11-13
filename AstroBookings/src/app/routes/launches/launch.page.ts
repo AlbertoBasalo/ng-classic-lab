@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PassengerDto } from '@app/models/passenger.dto';
-import { concatMap, forkJoin, map, tap } from 'rxjs';
+import { concatMap, forkJoin, map, shareReplay, tap } from 'rxjs';
 import { LaunchService } from './launch.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class LaunchPage {
   /**
    * LaunchDto from the launchId
    */
-  launch$ = this.launchService.getLaunchById$(this.launchId);
+  launch$ = this.launchService.getLaunchById$(this.launchId).pipe(shareReplay());
 
   /**
    * AgencyDto from the launchId, when the launchDto is loaded
@@ -35,6 +35,7 @@ export class LaunchPage {
         bookings: this.launchService.getBookingsByLaunchId$(launch.id),
       }),
     ),
+    shareReplay(),
   );
 
   /**
