@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LaunchDto } from '@app/models/launch.dto';
-import { Observable } from 'rxjs';
+import { concatMap } from 'rxjs';
 import { LaunchService } from './launch.service';
 
 @Component({
@@ -9,18 +8,21 @@ import { LaunchService } from './launch.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LaunchPage {
-  /**
-   * Launch ID, from the route
-   */
-  launchId: string;
-  /**
-   * Observable to get the launch by ID
-   */
-  launch$: Observable<LaunchDto>;
+  // Get launchId once as snapshot
+  private readonly launchId: string = this.route.snapshot.params['id'] || '';
 
-  constructor(private route: ActivatedRoute, private launchService: LaunchService) {
-    this.launchId = this.route.snapshot.paramMap.get('id') || '';
+  /**
+   * LaunchDto from the launchId
+   */
+  launch$ = this.launchService.getLaunchById$(this.launchId);
 
-    this.launch$ = this.launchService.getLaunchById$(this.launchId);
-  }
+  /**
+   * AgencyDto from the launchId, when the launchDto is loaded
+   */
+  agency$ = this.launch$.pipe(
+    // Get the agency from the launchId, when the launchDto is loaded
+    concatMap((launch) => this.launchService.getAgencyById$(launch.agencyId)),
+  );
+
+  constructor(private route: ActivatedRoute, private launchService: LaunchService) {}
 }
