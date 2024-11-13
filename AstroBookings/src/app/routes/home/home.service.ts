@@ -35,7 +35,7 @@ export class HomeService {
       }),
     );
   }
-  bySearchTerm(launch: LaunchDto, searchTerm: string): boolean {
+  private bySearchTerm(launch: LaunchDto, searchTerm: string): boolean {
     const mission = launch.mission.toLowerCase();
     const destination = launch.destination.toLowerCase();
     const termsArray = [mission, destination];

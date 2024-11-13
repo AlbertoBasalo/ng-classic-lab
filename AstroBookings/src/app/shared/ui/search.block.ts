@@ -52,7 +52,9 @@ export class SearchBlock implements AfterViewInit {
    * When the view is initialized, subscribe to the input event and emit the search term
    */
   ngAfterViewInit() {
+    // creates an observable source from the input event
     const inputSource$ = fromEvent(this.searchInput.nativeElement, 'input');
+    // pipe the observable source through a series of RxJS operators
     inputSource$
       .pipe(
         map((event: any) => event.target as HTMLInputElement),
@@ -61,7 +63,8 @@ export class SearchBlock implements AfterViewInit {
         distinctUntilChanged(),
         filter((term) => term.length === 0 || term.length >= 3),
         tap((term) => console.log(`fromEvent Search Term: ${term}`)),
+        tap((term) => this.search.emit(term)),
       )
-      .subscribe((term) => this.search.emit(term));
+      .subscribe();
   }
 }
