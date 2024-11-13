@@ -11,5 +11,5 @@ import { LaunchDto, LaunchStatus } from '../models/launch.dto';
 @Injectable()
 export abstract class LaunchesRepository {
   abstract getLaunchesByStatus$(status: LaunchStatus): Observable<LaunchDto[]>;
-  abstract getLaunchById$(id: string): Observable<LaunchDto>;
+  abstract getById$(id: string): Observable<LaunchDto>;
 }

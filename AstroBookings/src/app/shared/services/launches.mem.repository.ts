@@ -46,7 +46,7 @@ export class LaunchesMemRepository extends LaunchesRepository {
     return of(this.launches.filter((launch) => launch.status === status)).pipe(delay(2000));
   }
 
-  getLaunchById$(id: string): Observable<LaunchDto> {
+  getById$(id: string): Observable<LaunchDto> {
     const foundLaunch = this.launches.find((launch) => launch.id === id);
     if (foundLaunch) {
       return of(foundLaunch);

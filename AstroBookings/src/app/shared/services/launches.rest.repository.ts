@@ -32,7 +32,7 @@ export class LaunchesRestRepository extends LaunchesRepository {
     return this.http.get<LaunchDto[]>(url);
   }
 
-  getLaunchById$(id: string): Observable<LaunchDto> {
+  getById$(id: string): Observable<LaunchDto> {
     const forcedDelay = '&delay=1000'; // '&delay=1000';
     const forcedStatus = ''; //'&status=418';
     const forcedEmpty = ''; // 'kk';

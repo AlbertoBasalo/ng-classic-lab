@@ -3,6 +3,8 @@
     <h1>{{ launch.mission}}</h1>
     <app-launch-details [launch]="launch"></app-launch-details>
     <pre>Agency: {{ agency$ | async | json }}</pre>
+    <pre>Rocket and Bookings: {{ rocketAndBookings$ | async | json }}</pre>
+    <pre>Available Seats: {{ availableSeats$ | async }}</pre>
     <app-bookings-form [launch]="launch"></app-bookings-form>
   </ng-template>
 </app-async-block>

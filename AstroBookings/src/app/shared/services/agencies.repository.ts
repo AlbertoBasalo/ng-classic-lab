@@ -8,7 +8,7 @@ import { AgencyDto } from '../models/agency.dto';
 export class AgenciesRepository {
   constructor(private readonly http: HttpClient) {}
 
-  getAgencyById$(id: string): Observable<AgencyDto> {
+  getById$(id: string): Observable<AgencyDto> {
     return this.http.get<AgencyDto>(`${environment.apiUrl}/agencies/${id}`);
   }
 }
