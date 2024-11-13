@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { concatMap, forkJoin, map } from 'rxjs';
+import { PassengerDto } from '@app/models/passenger.dto';
+import { concatMap, forkJoin, map, tap } from 'rxjs';
 import { LaunchService } from './launch.service';
 
 @Component({
@@ -47,5 +48,33 @@ export class LaunchPage {
     }),
   );
 
-  constructor(private route: ActivatedRoute, private launchService: LaunchService) {}
+  /**
+   * PassengerDto[] from the launchId, when the rocket and bookings are loaded
+   */
+  passengersId$ = this.rocketAndBookings$.pipe(
+    // array of passengers from the array of bookings, where each booking has an array of passengers
+    // we must flatten the array of bookings to get an array of passengers
+    // similar to RxJs, but fully synchronous
+    map(({ bookings }) => bookings.flatMap((booking) => booking.passengers)),
+    tap((passengers) => {
+      // this call uses mergeMap internally,
+      // gets an array of passengersIds and returns a passenger for each id
+      this.launchService.getPassengersByBookingIds$(passengers).subscribe((passenger) => {
+        this.passengers = [...this.passengers, passenger];
+        // force the change detection to update the view
+        this.cd.markForCheck();
+      });
+    }),
+  );
+
+  /**
+   * Array of passengers, filled when the passengersId$ is loaded
+   */
+  passengers: PassengerDto[] = [];
+
+  constructor(
+    private route: ActivatedRoute,
+    private launchService: LaunchService,
+    private cd: ChangeDetectorRef,
+  ) {}
 }
