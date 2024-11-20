@@ -1,19 +1,12 @@
 import { Component } from '@angular/core';
 import { environment } from '@app/env/environment';
-import { GlobalStoreService } from '@app/services/global.store';
+import { GlobalStore } from '@app/services/global.store';
 @Component({
   selector: 'app-footer',
   styles: [
     `
       footer {
-        background-color: #f5f5f5;
-        padding: 0.5rem;
-      }
-      nav {
-        display: flex;
-        gap: 1rem;
-        color: #666;
-        font-size: 0.9rem;
+        background-color: #fff;
       }
     `,
   ],
@@ -37,5 +30,5 @@ export class FooterWidget {
   apiStatus$ = this.globalStore.select((state) => state.apiStatus);
   lastApiError$ = this.globalStore.select((state) => state.lastApiError);
   lastApiRequestMs$ = this.globalStore.select((state) => state.lastApiRequestMs);
-  constructor(private readonly globalStore: GlobalStoreService) {}
+  constructor(private readonly globalStore: GlobalStore) {}
 }

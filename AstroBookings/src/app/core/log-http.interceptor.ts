@@ -1,6 +1,6 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { GlobalStoreService } from '@app/services/global.store';
+import { GlobalStore } from '@app/services/global.store';
 import { LogService } from '@app/services/log.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
@@ -12,7 +12,7 @@ import { catchError, tap } from 'rxjs/operators';
 @Injectable()
 export class LogHttpInterceptor implements HttpInterceptor {
   private startTime = 0;
-  constructor(private logService: LogService, private globalStore: GlobalStoreService) {}
+  constructor(private logService: LogService, private globalStore: GlobalStore) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.logService.log(`HTTP Request: ${request.method} ${request.url}`);
