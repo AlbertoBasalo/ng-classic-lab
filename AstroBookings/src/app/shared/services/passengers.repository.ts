@@ -12,6 +12,7 @@ export class PassengersRepository {
 
   getById$(id: string): Observable<PassengerDto> {
     const delay = Math.floor(Math.random() * 5000);
-    return this.http.get<PassengerDto>(`${environment.apiUrl}/passengers/${id}?delay=${delay}`);
+    const url = `${environment.apiUrl}/passengers/${id}?delay=${delay}`;
+    return this.http.get<PassengerDto>(url);
   }
 }

@@ -30,9 +30,16 @@ import { debounceTime, distinctUntilChanged, filter, fromEvent, map, tap } from 
 })
 export class SearchBlock implements AfterViewInit {
   // Inputs
+  /**
+   * The text for the search input placeholder
+   */
   @Input() placeholder = 'Search';
 
+  /**
+   * The current search term, can be set by the parent component
+   */
   @Input() currentSearchTerm: string = '';
+
   // Outputs
   /**
    * Emits the search term
@@ -49,7 +56,9 @@ export class SearchBlock implements AfterViewInit {
   // Event Handlers
 
   /**
-   * When the view is initialized, subscribe to the input event and emit the search term
+   * When the view is initialized,
+   * - subscribe to the input event
+   * - emit the search term
    */
   ngAfterViewInit() {
     // creates an observable source from the input event
@@ -59,9 +68,9 @@ export class SearchBlock implements AfterViewInit {
       .pipe(
         map((event: any) => event.target as HTMLInputElement),
         map((target: HTMLInputElement) => target.value.trim()),
-        debounceTime(300),
-        distinctUntilChanged(),
-        filter((term) => term.length === 0 || term.length >= 3),
+        debounceTime(300), // to avoid too many requests
+        distinctUntilChanged(), // to avoid the same value multiple times
+        filter((term) => term.length === 0 || term.length >= 3), // to avoid short search terms
         tap((term) => console.log(`fromEvent Search Term: ${term}`)),
         tap((term) => this.search.emit(term)),
       )

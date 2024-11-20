@@ -4,9 +4,11 @@
     <pre>Rocket and Bookings: {{ rocketAndBookings$ | async | json }}</pre>
     <pre>Available Seats: {{ availableSeats$ | async }}</pre>
     <pre>PassengersIds: {{ passengersId$ | async | json }}</pre>
-    <div *ngFor="let passenger of passengers">
-      <pre>{{ passenger | json }}</pre>
-    </div>
+    <ng-container *ngIf="passengersDto$ | async">
+      <div *ngFor="let passenger of passengers">
+        <pre>{{ passenger | json }}</pre>
+      </div>
+    </ng-container>
     <h1>{{ launch.mission}}</h1>
     <app-launch-details [launch]="launch"></app-launch-details>
     <app-bookings-form [launch]="launch"></app-bookings-form>
