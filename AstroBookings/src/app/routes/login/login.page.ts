@@ -10,13 +10,8 @@ export class LoginPage {
   constructor(private readonly loginService: LoginService) {}
 
   onLogin(loginDto: LoginDto): void {
-    const success = this.loginService.login(loginDto);
-    if (success) {
-      console.log('Login successful');
-      // Here you would typically navigate to another page or update the UI
-    } else {
-      console.log('Login failed');
-      // Here you would typically show an error message
-    }
+    this.loginService.login$(loginDto).subscribe((userTokenDto) => {
+      console.log('Login successful', userTokenDto);
+    });
   }
 }

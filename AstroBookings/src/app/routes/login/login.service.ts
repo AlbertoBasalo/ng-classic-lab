@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
+import { UserTokenDto } from '@app/models/user-token.dto';
+import { UsersRepository } from '@app/services/users.repository';
+import { Observable } from 'rxjs';
 import { LoginDto } from './login.dto';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
-  constructor() {}
+  constructor(private readonly usersRepository: UsersRepository) {}
 
-  login(loginDto: LoginDto): boolean {
-    // This is a placeholder implementation
-    // In a real application, you would typically make an API call here
-    console.log(`Attempting to log in user with email: ${loginDto.email}`);
-    return loginDto.email === 'admin@astrobookings.com' && loginDto.password === 'secret123';
+  login$(loginDto: LoginDto): Observable<UserTokenDto> {
+    return this.usersRepository.login$(loginDto);
   }
 }
