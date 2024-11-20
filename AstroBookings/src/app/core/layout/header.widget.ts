@@ -3,6 +3,13 @@ import { UserStoreService } from '@app/services/user.store';
 
 @Component({
   selector: 'app-header',
+  styles: [
+    `
+      header {
+        background-color: #fff;
+      }
+    `,
+  ],
   template: `
     <header>
       <nav>

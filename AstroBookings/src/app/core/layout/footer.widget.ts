@@ -3,6 +3,20 @@ import { environment } from '@app/env/environment';
 import { GlobalStoreService } from '@app/services/global.store';
 @Component({
   selector: 'app-footer',
+  styles: [
+    `
+      footer {
+        background-color: #f5f5f5;
+        padding: 0.5rem;
+      }
+      nav {
+        display: flex;
+        gap: 1rem;
+        color: #666;
+        font-size: 0.9rem;
+      }
+    `,
+  ],
   template: `
     <footer>
       <nav>
