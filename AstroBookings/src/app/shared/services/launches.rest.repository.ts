@@ -32,6 +32,11 @@ export class LaunchesRestRepository extends LaunchesRepository {
     return this.http.get<LaunchDto[]>(url);
   }
 
+  /**
+   * Gets a launch by id
+   * @param id - The id of the launch to get
+   * @returns - An observable that emits the launch
+   */
   getById$(id: string): Observable<LaunchDto> {
     const forcedDelay = '&delay=1000'; // '&delay=1000';
     const forcedStatus = ''; //'&status=418';
