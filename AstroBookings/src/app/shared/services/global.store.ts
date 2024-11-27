@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { ApiAction, appReducer, AppState, UserAction } from './global.state';
+import { GlobalAction, globalReducer, GlobalState, initialGlobalState } from './global.state';
+
 
 /**
  * Global store service
@@ -12,21 +13,21 @@ import { ApiAction, appReducer, AppState, UserAction } from './global.state';
   providedIn: 'root',
 })
 export class GlobalStore {
-  // Internal state, accessed only by the store
-  readonly #state$ = new BehaviorSubject<AppState>({});
+  // Internal state, mutated only by the store dispatcher
+  readonly #state$ = new BehaviorSubject<GlobalState>(initialGlobalState);
 
   /**
-   * Observable of the state
+   * Observable of the state changes
    */
-  readonly state$: Observable<AppState> = this.#state$.asObservable();
+  readonly state$: Observable<GlobalState> = this.#state$.asObservable();
 
   /**
    * Dispatch an action to update the state
    * @param action Action to dispatch
    */
-  dispatch(action: UserAction | ApiAction): void {
+  dispatch(action: GlobalAction): void {
     const currentState = this.#state$.getValue();
-    const newState = appReducer(currentState, action);
+    const newState = globalReducer(currentState, action);
     this.#state$.next(newState);
   }
 
@@ -35,7 +36,7 @@ export class GlobalStore {
    * @param selector Selector function. Takes the state and returns a computed projection of it.
    * @returns Observable of the selected portion of the state
    **/
-  select<K>(selector: (state: AppState) => K): Observable<K> {
+  select<K>(selector: (state: GlobalState) => K): Observable<K> {
     return this.#state$.pipe(map(selector), distinctUntilChanged());
   }
 }

@@ -1,60 +1,90 @@
 import { UserTokenDto } from '@app/models/user-token.dto';
-
-type ApiStatus = 'idle' | 'loading' | 'resolved' | 'error';
+/**
+ * The type for the global state values
+ */
+export type GlobalState = {
+  userToken: UserTokenDto | undefined;
+  lastApiError: string;
+  lastApiMs: number;
+  apiStatus: ApiStatus;
+};
 
 /**
- * State of the application
+ * The initial state for the global state to avoid undefined values
  */
-export interface AppState {
-  user?: UserTokenDto;
-  apiStatus?: ApiStatus;
-  lastApiRequestMs?: number;
-  lastApiError?: string;
+export const initialGlobalState: GlobalState = {
+  userToken: undefined,
+  lastApiError: '',
+  lastApiMs: 0,
+  apiStatus: 'idle',
+};
+
+/**
+ * The type for the API status
+ */
+type ApiStatus = 'idle' | 'loading' | 'error' | 'complete';
+
+/**
+ * Basic interface for the actions
+ */
+interface Action {
+  type: string;
+  payload?: any;
 }
 
 /**
- * User actions
+ * Actions related to the user
  */
-export type UserAction = { type: 'SET_USER'; payload: UserTokenDto } | { type: 'CLEAR_USER' };
+interface UserAction extends Action {
+  type: 'login' | 'logout';
+  payload?: UserTokenDto;
+}
+
+interface ApiLoadingAction extends Action {
+  type: 'apiLoading';
+}
+
+interface ApiErrorAction extends Action {
+  type: 'apiError';
+  payload: string;
+}
+
+interface ApiCompleteAction extends Action {
+  type: 'apiComplete';
+  payload: number;
+}
 
 /**
- * API actions
+ * The union type for all the actions related to the API
  */
-export type ApiAction =
-  | { type: 'API_REQUEST' }
-  | { type: 'API_SUCCESS'; payload?: number }
-  | { type: 'API_ERROR'; payload: string };
-
-type Action = UserAction | ApiAction;
+type ApiAction = ApiErrorAction | ApiCompleteAction | ApiLoadingAction;
 
 /**
- * App reducer
- * - takes the current state and an action
- * - returns the new state as a mutated clone
+ * The union type for all the actions that can be dispatched
  */
-export function appReducer(state: AppState, action: Action): AppState {
+export type GlobalAction = UserAction | ApiAction;
+
+/**
+ * Function to apply the actions to the state.
+ * - Mutates the state by generating a new one after applying the action
+ * - It is called by the store to update the state when a new action is dispatched
+ * @param state The current state
+ * @param action The action to apply
+ * @returns The new state (cloned)
+ */
+export function globalReducer(state: GlobalState, action: GlobalAction): GlobalState {
   switch (action.type) {
-    case 'SET_USER':
-      return { ...state, user: action.payload };
-    case 'CLEAR_USER':
-      return { ...state, user: undefined };
-    case 'API_REQUEST':
-      return { ...state, apiStatus: 'loading', lastApiRequestMs: 0, lastApiError: undefined };
-    case 'API_SUCCESS':
-      return {
-        ...state,
-        apiStatus: 'resolved',
-        lastApiRequestMs: action.payload,
-        lastApiError: undefined,
-      };
-    case 'API_ERROR':
-      return {
-        ...state,
-        apiStatus: 'error',
-        lastApiRequestMs: undefined,
-        lastApiError: action.payload,
-      };
+    case 'login':
+      return { ...state, userToken: action.payload };
+    case 'logout':
+      return { ...state, userToken: undefined };
+    case 'apiLoading':
+      return { ...state, apiStatus: 'loading' };
+    case 'apiError':
+      return { ...state, lastApiError: action.payload, apiStatus: 'error' };
+    case 'apiComplete':
+      return { ...state, lastApiMs: action.payload, apiStatus: 'complete' };
     default:
-      return state;
+      return { ...state };
   }
 }
