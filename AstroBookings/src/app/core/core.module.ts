@@ -6,6 +6,7 @@ import { GlobalStore } from '@app/services/global.store';
 import { LaunchesRepository } from '@app/services/launches.repository';
 import { LocalStorageService } from '@app/services/local-storage.service';
 import { LOG_SOURCE, LogService } from '@app/services/log.service';
+import { RouterStore } from '@app/services/router.store';
 import { appInitializerFactory } from './app-initializer.factory';
 import { CustomErrorHandler } from './custom-error.handler';
 import { launchesRepositoryFactory } from './launches-repository.factory';
@@ -54,7 +55,7 @@ import { LogHttpInterceptor } from './log-http.interceptor';
   ],
 })
 export class CoreModule {
-  constructor(globalStore: GlobalStore) {
+  constructor(globalStore: GlobalStore, routerStore: RouterStore) {
     const triggerFn = (state: GlobalState) => state.apiStatus;
     const effectFn = (apiStatus: string) => console.log('♻️ API Status:', apiStatus);
     globalStore.addEffect(triggerFn, effectFn);

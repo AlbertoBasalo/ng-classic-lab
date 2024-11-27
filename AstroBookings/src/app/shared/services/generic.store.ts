@@ -2,10 +2,19 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 
 /**
- * Generic Store
- * @template T - Type of the state
+ * Base interface for actions
  */
-export class Store<T> {
+export interface Action {
+  type: string;
+  payload?: any;
+}
+
+/**
+ * Generic Store with typed state and actions
+ * @template T - Type of the state
+ * @template A - Type of the actions (must extend Action)
+ */
+export class Store<T, A extends Action = Action> {
   /**
    * Internal state, accessed only by the store
    */
@@ -19,48 +28,34 @@ export class Store<T> {
   /**
    * Reducer function to update the state
    */
-  private reducer?: (state: T, action: { type: string; payload?: any }) => T;
+  private reducer?: (state: T, action: A) => T;
 
   /**
-   * Creates a new store with the given initial state.
+   * Creates a new store with the given initial state and optional reducer function
+   * - If no reducer is provided, the state will be updated by the action payload directly.
    * @param initialState - Initial state of the store
    * @param reducer - Optional reducer function to update the state
    */
-  constructor(initialState: T, reducer?: (state: T, action: any) => T) {
+  constructor(initialState: T, reducer?: (state: T, action: A) => T) {
     this.state$ = new BehaviorSubject<T>(this.clone(initialState));
     this.reducer = reducer;
   }
 
   /**
-   * Dispatches a function to update the state.
-   * - The provided function will receive the current state
-   * - and must return a new state.
-   * - We take care of immutability by cloning the state before updating it
-   * @param updateFn - Function to update the state
-   */
-  dispatchFn(updateFn: (state: T) => T): void {
-    const currentState = this.state$.getValue();
-    const newState = this.clone(updateFn(currentState));
-    this.state$.next(newState);
-  }
-
-  /**
-   * Dispatches an action to update the state.
+   * Dispatches an action to update the state.  
    * - The reducer function will be used to update the state if provided.
    * - Otherwise, the state will be updated by the action payload directly.
    * @param action - Action to dispatch
    */
-  dispatch(action: { type: string; payload?: any }): void {
+  dispatch(action: A): void {
     const currentState = this.state$.getValue();
     let newState: T;
     if (this.reducer) {
       newState = this.reducer(currentState, action);
-    } else if (action.payload) {
-      newState = action.payload;
     } else {
-      newState = currentState;
-    }
-    this.state$.next(newState);
+      newState = action.payload;
+    } 
+    this.state$.next(this.clone(newState));
   }
 
   /**
