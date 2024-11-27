@@ -27,8 +27,8 @@ import { GlobalStore } from '@app/services/global.store';
 })
 export class FooterWidget {
   environment = environment;
-  apiStatus$ = this.globalStore.select((state) => state.apiStatus);
-  lastApiError$ = this.globalStore.select((state) => state.lastApiError);
-  lastApiRequestMs$ = this.globalStore.select((state) => state.lastApiRequestMs);
+  apiStatus$ = this.globalStore.select$((state) => state.apiStatus);
+  lastApiError$ = this.globalStore.select$((state) => state.lastApiError);
+  lastApiRequestMs$ = this.globalStore.select$((state) => state.lastApiMs);
   constructor(private readonly globalStore: GlobalStore) {}
 }

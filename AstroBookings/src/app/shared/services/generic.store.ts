@@ -17,35 +17,60 @@ export class Store<T> {
   private effects: Subscription[] = [];
 
   /**
+   * Reducer function to update the state
+   */
+  private reducer?: (state: T, action: { type: string; payload?: any }) => T;
+
+  /**
    * Creates a new store with the given initial state.
    * @param initialState - Initial state of the store
+   * @param reducer - Optional reducer function to update the state
    */
-  constructor(initialState: T) {
+  constructor(initialState: T, reducer?: (state: T, action: any) => T) {
     this.state$ = new BehaviorSubject<T>(this.clone(initialState));
+    this.reducer = reducer;
   }
 
   /**
-   * Dispatch a change to the state.
-   * The provided function will receive the current state
-   * and must return a new state.
-   * - we take care of immutability by cloning the state before updating it
+   * Dispatches a function to update the state.
+   * - The provided function will receive the current state
+   * - and must return a new state.
+   * - We take care of immutability by cloning the state before updating it
    * @param updateFn - Function to update the state
    */
-  dispatch(updateFn: (state: T) => T): void {
+  dispatchFn(updateFn: (state: T) => T): void {
     const currentState = this.state$.getValue();
     const newState = this.clone(updateFn(currentState));
     this.state$.next(newState);
   }
 
   /**
+   * Dispatches an action to update the state.
+   * - The reducer function will be used to update the state if provided.
+   * - Otherwise, the state will be updated by the action payload directly.
+   * @param action - Action to dispatch
+   */
+  dispatch(action: { type: string; payload?: any }): void {
+    const currentState = this.state$.getValue();
+    let newState: T;
+    if (this.reducer) {
+      newState = this.reducer(currentState, action);
+    } else if (action.payload) {
+      newState = action.payload;
+    } else {
+      newState = currentState;
+    }
+    this.state$.next(newState);
+  }
+
+  /**
    * Select a portion (or computed projection) of the state as an observable.
-   * The provided function determines the portion (or projection) of the state to observe.
-   * The output observable emits only when the selected portion changes.
-   *
+   * - The provided function determines the portion (or projection) of the state to observe.
+   * - The output observable emits only when the selected portion changes.
    * @param selectorFn - Function to select part or computed projection of the state
    * @returns Observable of the selected state
    */
-  select<R>(selectorFn: (state: T) => R): Observable<R> {
+  select$<R>(selectorFn: (state: T) => R): Observable<R> {
     return this.state$.asObservable().pipe(
       map(selectorFn),
       distinctUntilChanged(), // Emit only if the selected part changes
@@ -54,13 +79,12 @@ export class Store<T> {
 
   /**
    * Add an effect to react to changes in the state.
-   * Effects are functions that run whenever the selected part of the state changes.
-   *
+   * - Effects are functions that run whenever the selected part of the state changes.
    * @param selectorFn - Function to select the part of the state to observe
    * @param effectFn - Function to execute when the selected part changes
    */
   addEffect<R>(selectorFn: (state: T) => R, effectFn: (value: R) => void): void {
-    const trigger$ = this.select(selectorFn);
+    const trigger$ = this.select$(selectorFn);
     const effectSubscription = trigger$.pipe(tap(effectFn)).subscribe();
     this.effects.push(effectSubscription);
   }
@@ -68,7 +92,6 @@ export class Store<T> {
   /**
    * Get the current state value (synchronously).
    * - ensures immutability by cloning the state
-   *
    * @returns The current state
    */
   getState(): T {
@@ -77,8 +100,7 @@ export class Store<T> {
 
   /**
    * Clone the state to ensure immutability.
-   * Use structured cloning for deep copies.
-   *
+   * - Use structured cloning for deep copies.
    * @param state - The state to clone
    * @returns A new copy of the state
    */

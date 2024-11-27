@@ -36,21 +36,21 @@ interface Action {
  * Actions related to the user
  */
 interface UserAction extends Action {
-  type: 'login' | 'logout';
+  type: 'LOGIN' | 'LOGOUT';
   payload?: UserTokenDto;
 }
 
 interface ApiLoadingAction extends Action {
-  type: 'apiLoading';
+  type: 'API_REQUEST';
 }
 
 interface ApiErrorAction extends Action {
-  type: 'apiError';
+  type: 'API_ERROR';
   payload: string;
 }
 
 interface ApiCompleteAction extends Action {
-  type: 'apiComplete';
+  type: 'API_SUCCESS';
   payload: number;
 }
 
@@ -74,15 +74,15 @@ export type GlobalAction = UserAction | ApiAction;
  */
 export function globalReducer(state: GlobalState, action: GlobalAction): GlobalState {
   switch (action.type) {
-    case 'login':
+    case 'LOGIN':
       return { ...state, userToken: action.payload };
-    case 'logout':
+    case 'LOGOUT':
       return { ...state, userToken: undefined };
-    case 'apiLoading':
+    case 'API_REQUEST':
       return { ...state, apiStatus: 'loading' };
-    case 'apiError':
+    case 'API_ERROR':
       return { ...state, lastApiError: action.payload, apiStatus: 'error' };
-    case 'apiComplete':
+    case 'API_SUCCESS':
       return { ...state, lastApiMs: action.payload, apiStatus: 'complete' };
     default:
       return { ...state };

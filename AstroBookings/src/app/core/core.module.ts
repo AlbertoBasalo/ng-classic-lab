@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
+import { GlobalState } from '@app/services/global.state';
 import { GlobalStore } from '@app/services/global.store';
 import { LaunchesRepository } from '@app/services/launches.repository';
 import { LocalStorageService } from '@app/services/local-storage.service';
@@ -52,4 +53,10 @@ import { LogHttpInterceptor } from './log-http.interceptor';
     },
   ],
 })
-export class CoreModule {}
+export class CoreModule {
+  constructor(globalStore: GlobalStore) {
+    const triggerFn = (state: GlobalState) => state.apiStatus;
+    const effectFn = (apiStatus: string) => console.log('♻️ API Status:', apiStatus);
+    globalStore.addEffect(triggerFn, effectFn);
+  }
+}
